@@ -1,0 +1,97 @@
+DROP DATABASE IF EXISTS DBMS2_prelim;
+CREATE DATABASE DBMS2_prelim;
+USE DBMS2_prelim;
+
+CREATE TABLE Car(
+    car_id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    serial_number varchar(50) NOT NULL,
+    make varchar(50) NOT NULL,
+    model varchar(50) NOT NULL,
+    colour varchar(50) NOT NULL,
+    car_year varchar(50) NOT NULL,
+    for_sale enum('Y', 'N')
+);
+    
+CREATE TABLE Customer(
+    customer_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    last_name varchar(50) NOT NULL,
+    first_name varchar(50) NOT NULL,
+    phone_number varchar(50) NOT NULL,
+    address varchar(50) NOT NULL,
+    city varchar(50) NOT NULL,
+    state_province varchar(50) NOT NULL,
+    country varchar(50) NOT NULL,
+    postal_code INT NOT NULL
+);
+ 
+ CREATE TABLE SalesPerson(
+     salesperson_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+     last_name varchar(50) NOT NULL,
+     first_name varchar(50) NOT NULL
+);
+     
+  CREATE TABLE SalesInvoice(
+      invoice_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+      invoice_num_date INT NOT NULL,
+      car_id INT NOT NULL,
+      customer_id INT NOT NULL,
+      salesperson_id INT NOT NULL,
+      CONSTRAINT fk_sales_invoice_car_id_car_car_id FOREIGN KEY (car_id) REFERENCES Car(car_id),
+      CONSTRAINT fk_sales_invoice_customer_id_customer_customer_id FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+      CONSTRAINT fk_sales_invoice_salesperson_id_salesperson_salesperson_id FOREIGN KEY (salesperson_id) REFERENCES SalesPerson(salesperson_id)
+);
+      
+ CREATE TABLE ServiceTicket(
+     service_ticket_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+     service_ticket_number INT NOT NULL,
+     car_id INT NOT NULL,
+     customer_id INT NOT NULL,
+     date_received varchar(50),
+     comments varchar(500),
+     date_returned_to_customer varchar(50),
+     CONSTRAINT fk_service_ticket_car_id_car_car_id FOREIGN KEY (car_id) REFERENCES Car(car_id),
+     CONSTRAINT fk_service_ticket_customer_id_customer_customer_id FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+);
+
+CREATE TABLE Mechanic(
+    mechanic_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    last_name varchar(50),
+    first_name varchar(50)
+);
+    
+CREATE TABLE Service(
+    service_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    service_name varchar(50) NOT NULL,
+    hourly_rate varchar(50) NOT NULL
+);
+    
+CREATE TABLE ServiceMechanic(
+    service_mechanic_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    service_ticket_id INT NOT NULL,
+    service_id INT NOT NULL,
+    mechanic_id INT NOT NULL,
+    hours varchar(50) NOT NULL,
+    comments varchar(50) NOT NULL,
+    rate varchar(50) NOT NULL,
+    CONSTRAINT fk_service_mechanic_service_ticket_id FOREIGN KEY (service_ticket_id) REFERENCES ServiceTicket(customer_id),
+    CONSTRAINT fk_service_mechanic_service_id FOREIGN KEY (service_id) REFERENCES Service(service_id),
+    CONSTRAINT fk_service_mechanic_mechanic_id FOREIGN KEY (mechanic_id) REFERENCES Mechanic(mechanic_id)
+);
+    
+CREATE TABLE Parts(
+    parts_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    part_number INT NOT NULL,
+    description varchar(50) NOT NULL,
+    purchase_price INT NOT NULL,
+    retail_price INT NOT NULL
+);
+    
+CREATE TABLE PartsUsed(
+    parts_used_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    fk1_parts_id INT NOT NULL,
+    fk2_service_ticket_id INT NOT NULL,
+    number_used INT NOT NULL,
+    price INT NOT NULL,
+    CONSTRAINT fk_partsused_fk1_parts_id_parts_parts_id FOREIGN KEY (fk1_parts_id) REFERENCES Parts(parts_id),
+    CONSTRAINT fk_partsused_fk2_service_ticket_id FOREIGN KEY (fk2_service_ticket_id) REFERENCES ServiceTicket(customer_id)
+)
